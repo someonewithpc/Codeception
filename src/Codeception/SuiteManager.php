@@ -156,9 +156,19 @@ class SuiteManager
         if (!$this->settings['actor']) {
             return null;
         }
-        return $this->settings['namespace']
-            ? rtrim($this->settings['namespace'], '\\') . '\\' . $this->settings['actor']
-            : $this->settings['actor'];
+
+        $namespace = "";
+
+        if ($this->settings['namespace']) {
+            $namespace .= '\\' . $this->settings['namespace'];
+        }
+
+        if (isset($this->settings['support_namespace'])) {
+            $namespace .= '\\' . $this->settings['support_namespace'];
+        }
+        $namespace = rtrim($namespace, '\\') . '\\';
+
+        return $namespace . $this->settings['actor'];
     }
 
     protected function checkEnvironmentExists(TestInterface $test): void

@@ -56,7 +56,7 @@ EOF;
     {
         $this->settings = $settings;
         $this->name = $name;
-        $this->namespace = $this->getNamespaceString($this->settings['namespace'] . '\\Group\\' . $name);
+        $this->namespace = $this->getNamespaceString($this->supportNamespace() . '\\Group\\' . $name);
     }
 
     public function produce(): string

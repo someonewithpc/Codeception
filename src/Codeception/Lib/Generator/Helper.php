@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Codeception\Lib\Generator;
 
+use Codeception\Lib\Generator\Shared\Classname;
 use Codeception\Util\Shared\Namespaces;
 use Codeception\Util\Template;
 
 class Helper
 {
     use Namespaces;
+    use Classname;
 
     protected string $template = <<<EOF
 <?php
@@ -30,22 +32,19 @@ EOF;
 
     protected string $name;
 
-    public function __construct(string $name, string $namespace = '')
+    private array $settings = [];
+
+    public function __construct(array $settings, string $name)
     {
-        $this->namespace = $namespace;
+        $this->settings = $settings;
         $this->name = $name;
     }
 
     public function produce(): string
     {
         return (new Template($this->template))
-            ->place('namespace', $this->getNamespaceHeader($this->namespace . '\\Helper\\' . $this->name))
+            ->place('namespace', $this->getNamespaceHeader($this->supportNamespace() . 'Helper\\' . $this->name))
             ->place('name', $this->getShortClassName($this->name))
             ->produce();
-    }
-
-    public function getHelperName(): string
-    {
-        return rtrim('\\' . $this->namespace, '\\') . '\\Helper\\' . $this->name;
     }
 }
