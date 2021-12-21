@@ -98,7 +98,15 @@ class SuiteManagerTest extends \Codeception\PHPUnit\TestCase
     public function testDependencyResolution()
     {
         $this->suiteman->loadTests(codecept_data_dir().'SimpleWithDependencyInjectionCest.php');
-        $this->assertEquals(3, $this->suiteman->getSuite()->count());
+        try {
+            $this->assertEquals(3, $this->suiteman->getSuite()->count());
+        } catch (\Exception $e) {
+            $suite = $this->suiteman->getSuite();
+            if (method_exists($suite, 'tests')) {
+                var_dump($suite->tests());
+                die($e->getMessage());
+            }
+        }
     }
 
     public function testGroupEventsAreFired()
