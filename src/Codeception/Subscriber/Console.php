@@ -30,7 +30,7 @@ use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\IncompleteTestError;
 use PHPUnit\Framework\SelfDescribing;
 use PHPUnit\Framework\SkippedTestError;
-use PHPUnit\Util\Filter as PHPUnitFilter;
+use PHPUnit\TextUI\ResultPrinter\Standard\ResultPrinter;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -252,8 +252,14 @@ class Console implements EventSubscriberInterface
 
     public function afterResult(PrintResultEvent $event): void
     {
+
         $result = $event->getResult();
-        if ($result->skippedCount() + $result->notImplementedCount() > 0 && $this->options['verbosity'] < OutputInterface::VERBOSITY_VERBOSE) {
+        $verbose = $this->options['verbosity'] >= OutputInterface::VERBOSITY_VERBOSE;
+
+        $phpunitResultPrinter = new ResultPrinter('php://stdout', $verbose, $this->ansi, $this->width, false);
+        $phpunitResultPrinter->printResult($result);
+
+        if ($result->skippedCount() + $result->notImplementedCount() > 0 && $verbose) {
             $this->output->writeln("run with `-v` to get more info about skipped or incomplete tests");
         }
         foreach ($this->reports as $message) {

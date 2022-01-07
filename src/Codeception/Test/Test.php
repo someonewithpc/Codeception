@@ -80,7 +80,7 @@ abstract class Test implements TestInterface, Interfaces\Descriptive
      * Runs a test and collects its result in a TestResult instance.
      * Executes before/after hooks coming from traits.
      */
-    final public function run(TestResult $result = null): TestResult
+    final public function run(TestResult $result): void
     {
         $this->testResult = $result;
 
@@ -124,7 +124,6 @@ abstract class Test implements TestInterface, Interfaces\Descriptive
         }
 
         $result->endTest($this, $time);
-        return $result;
     }
 
     public function getTestResultObject(): TestResult
